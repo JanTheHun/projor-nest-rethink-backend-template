@@ -1,0 +1,20 @@
+// A song
+entity Song {
+    // The title of the song
+    String title
+    // The author of the song
+    @Join Author author
+}
+
+entity Author {
+    // The name of the author
+    String name
+}
+
+// A book
+entity Book {
+    // The title of the book
+    String title
+    // The author of the book
+    @Join Author author
+}

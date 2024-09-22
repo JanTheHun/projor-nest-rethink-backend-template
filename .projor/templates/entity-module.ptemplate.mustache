@@ -1,0 +1,19 @@
+{
+    "forEach": "entities",
+    "filename": "src/EntityModules/{{kebabCase name}}/{{kebabCase name}}.module.ts",
+    "formatUsing": "typescript"
+}
+---
+import { Module } from '@nestjs/common';
+import { RethinkModule } from "../../rethink/rethink.module";
+import { {{name}}Controller } from './{{kebabCase name}}.controller';
+import { {{name}}Service } from './{{kebabCase name}}.service';
+import { EventsModule } from "src/events/events.module";
+
+@Module({
+  imports: [RethinkModule, EventsModule],
+  controllers: [{{name}}Controller],
+  providers: [{{name}}Service],
+  exports: [{{name}}Service]
+})
+export class {{name}}Module {}

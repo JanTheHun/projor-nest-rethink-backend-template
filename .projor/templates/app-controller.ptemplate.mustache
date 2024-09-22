@@ -1,0 +1,25 @@
+{
+    "map": {
+        "entities": "entities"
+    },
+    "filename": "src/app.controller.ts",
+    "formatUsing": "typescript"
+}
+---
+import { Controller, Get } from '@nestjs/common';
+import { RethinkService } from "./rethink/rethink.service";
+
+@Controller()
+export class AppController {
+  constructor(private readonly rethinkService: RethinkService) {}
+
+  @Get()
+  async listTables(): Promise<string> {
+    return this.rethinkService.listTables().then(result => {
+      return JSON.stringify(result)
+    }
+    ).catch(reason => {
+      return reason
+    })
+  }
+}

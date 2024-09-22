@@ -1,0 +1,14 @@
+.projor/.pstate.json
+/node_modules
+/dist
+/src
+/test
+.eslintrc.js
+.prettierignore
+.prettierrc
+nest-cli.json
+package-lock.json
+package.json
+tsconfig.build.json
+tsconfig.json
+README.md

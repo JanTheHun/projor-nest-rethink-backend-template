@@ -1,0 +1,27 @@
+{
+    "map": {
+        "entities": "entities"
+    },
+    "filename": "src/events/events.service.ts"
+  }
+---
+import { Injectable } from "@nestjs/common";
+import { Subscription } from "rxjs";
+import { EventsGateway } from "./events.gateway";
+
+@Injectable()
+export class EventsService {
+    constructor(
+        private readonly eventsGateway: EventsGateway
+    ) {}
+
+
+    public hello(): void {
+        console.log("Hello from EventsService");
+    }
+    
+
+    public emitMessage(entity: string, message: string = null): void {
+        this.eventsGateway.emitMessage({ entity, message });
+    }
+}

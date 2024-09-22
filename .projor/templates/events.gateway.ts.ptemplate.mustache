@@ -1,0 +1,58 @@
+{
+    "map": {
+        "entities": "entities"
+    },
+    "filename": "src/events/events.gateway.ts"
+  }
+---
+import {
+  MessageBody,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+} from '@nestjs/websockets';
+import { from, Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Server } from 'socket.io';
+
+@WebSocketGateway({
+  cors: {
+    origin: '*',
+  },
+})
+export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  @WebSocketServer() server;
+  users: number = 0;
+  messageSubject: Subject<any> = new Subject();
+
+  async handleConnection() {
+    // A client has connected
+    this.users++;
+
+    // Notify connected clients of current users
+    this.server.emit('msgFromServer', this.users);
+  //   console.log('connected', Object.keys(this.server.engine.clients));
+  }
+
+  async handleDisconnect() {
+    // A client has disconnected
+    this.users--;
+
+    // Notify connected clients of current users
+    this.server.emit('msgFromServer', this.users);
+  }
+
+  @SubscribeMessage('msgToServer')
+  async onChat(client, message) {
+      console.log('message', message);
+      
+      this.messageSubject.next(client.id);
+      // client.broadcast.emit('clientConnected', client.id);
+  }
+
+  public emitMessage(message: any): void {
+      this.server.emit('msgFromServer', message );
+  }
+}

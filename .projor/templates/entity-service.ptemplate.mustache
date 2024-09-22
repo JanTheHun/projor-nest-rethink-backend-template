@@ -1,0 +1,30 @@
+{
+    "forEach": "entities",
+    "filename": "src/EntityModules/{{kebabCase name}}/{{kebabCase name}}.service.ts",
+    "formatUsing": "typescript"
+}
+---
+import { Injectable } from '@nestjs/common';
+import { EventsService } from "src/events/events.service";
+import { RethinkService } from "src/rethink/rethink.service";
+
+@Injectable()
+export class {{pascalCase name}}Service {
+    constructor(
+        private readonly eventsService: EventsService,
+        private readonly rethinkService: RethinkService
+    ) {
+        this.subscribeToEvents();
+    }
+  
+    public hello(): void {
+		console.log("Hello from {{pascalCase name}}Service");
+	}
+
+    public subscribeToEvents(): void {
+        this.rethinkService.subscribeToFeed("{{camelCase name}}", (data) => {
+            console.log("{{pascalCase name}}Service received data: ", data);
+            this.eventsService.emitMessage("{{camelCase name}}");
+        });
+    }
+}

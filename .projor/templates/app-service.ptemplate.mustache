@@ -1,0 +1,28 @@
+{
+    "map": {
+        "entities": "entities"
+    },
+    "filename": "src/app.service.ts",
+    "formatUsing": "typescript"
+}
+---
+import { Injectable } from '@nestjs/common';
+import { RethinkService } from "./rethink/rethink.service";
+
+@Injectable()
+export class AppService {
+    constructor(private readonly rethinkService: RethinkService) {
+        this.checkEntityTables();
+    }
+  
+  private async checkEntityTables(): Promise<void> {
+    const tables = await this.rethinkService.listTables()
+    const entities =[{{#each entities}}"{{kebabCase name}}"{{#unless @last}},{{/unless}}{{/each}}]
+    entities.forEach(async (entity) => {
+        if (!tables.includes(entity)) {
+            console.log(`Creating table ${entity}`)
+            await this.rethinkService.createTable(entity)
+        }
+    })
+  }
+}

@@ -1,0 +1,16 @@
+{
+    "map": {
+        "entities": "entities"
+    },
+    "filename": "src/rethink/database.provider.ts"
+  }
+---
+import * as rethink from "rethinkdb"
+
+export const RethinkProvider = {
+    provide: 'RethinkProvider',
+    useFactory: async () => {
+      const conn = await rethink.connect("127.0.0.1")
+      return conn
+  }
+}
