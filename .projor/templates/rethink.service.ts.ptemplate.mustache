@@ -85,7 +85,7 @@ export class RethinkService {
 
     subscribeToFeed(tableName:string, callback:Function): void {
         rethink.db('test').table(tableName).changes().run(this.connection, (err, cursor) => {
-            cursor.each((err, row) => {
+            cursor && cursor.each((err, row) => {
                 callback(row)
             })
         })

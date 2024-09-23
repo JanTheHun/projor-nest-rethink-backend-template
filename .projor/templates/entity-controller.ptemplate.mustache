@@ -44,13 +44,24 @@ export class {{pascalCase name}}Controller {
 		
 	@Post()
 	async createEntity(@Body() data): Promise<any> {
-		await this.rethinkService.insertEntity("{{kebabCase name}}", data)
-			.then(result => {
-				return JSON.stringify(result)
-			})
-			.catch(reason => {
-				return reason
-			})
+		if (data.id) {
+			await this.rethinkService.updateEntity("{{kebabCase name}}", data.id, data)
+				.then(result => {
+					return JSON.stringify(result)
+				})
+				.catch(reason => {
+					return reason
+				})
+		} else {
+			const { id, ...newEntity } = data
+			await this.rethinkService.insertEntity("{{kebabCase name}}", newEntity)
+				.then(result => {
+					return JSON.stringify(result)
+				})
+				.catch(reason => {
+					return reason
+				})
+		}
 	}
 		
 	@Put()
