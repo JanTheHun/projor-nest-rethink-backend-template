@@ -91,4 +91,35 @@ export class RethinkService {
         })
     }
 
+    async searchTable(table: string, query: any): Promise<any> {
+        let t = await rethink.db('test').table(table)
+        Object.entries(query).forEach((q: any) => {
+            q[1].value.forEach((qp) => {
+                if (qp && q[1].type === 'string') {
+                    t = t.filter(rethink.row(q[0]).match(qp))
+                } else if (q[1].type === 'number') {
+                    if (qp && isNaN(qp)) {
+                        if (qp.indexOf('$lt') !== -1) {
+                            const n = qp.replace('$lt', '')
+                            if (!isNaN(Number(n))) {
+                                t = t.filter(rethink.row(q[0]).lt(Number(n)))
+                            }
+                        } else if (qp.indexOf('$gt') !== -1) {
+                            const n = qp.replace('$gt', '')
+                            if (!isNaN(Number(n))) {
+                                t = t.filter(rethink.row(q[0]).gt(Number(n)))
+                            }
+                        } else {
+                            console.log('?', qp)
+                        }
+                    } else if (qp) {
+                        t = t.filter(rethink.row(q[0]).eq(Number(qp)))
+                    }
+                }
+            })
+        })
+        const result = await t.run(this.connection)
+        return result.toArray()
+    }
+
 }

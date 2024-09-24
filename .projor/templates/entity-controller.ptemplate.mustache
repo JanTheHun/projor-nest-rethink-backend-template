@@ -4,7 +4,7 @@
     "formatUsing": "typescript"
 }
 ---
-import { Controller, Post, Param, Get, Body, Delete, Put } from '@nestjs/common';
+import { Controller, Post, Param, Get, Body, Delete, Put, Query } from '@nestjs/common';
 import { RethinkService } from '../../rethink/rethink.service';
 import { {{pascalCase name}}Service } from './{{kebabCase name}}.service';
 
@@ -14,38 +14,53 @@ export class {{pascalCase name}}Controller {
 		private readonly rethinkService: RethinkService,
 		private {{camelCase name}}Service: {{pascalCase name}}Service ) {
 			this.{{camelCase name}}Service.hello()
-		}
-    
-  @Get()
-  async readTable(): Promise<any> {
-	let response = await this.rethinkService.readTable("{{kebabCase name}}")
-      .then(result => {
-        return JSON.stringify(result)
-      })
-      .catch(reason => {
-        return reason
-      })
-  
-    return response;
+	}
+			
+	@Get()
+	async readTable(): Promise<any> {
+		let response = await this.rethinkService.readTable("{{kebabCase name}}")
+			.then(result => {
+				return JSON.stringify(result)
+			})
+			.catch(reason => {
+				return reason
+			})
+		
+		return response;
 	}
 
-  @Get("/:id")
-  async readEntity(@Param("id") id): Promise<any> {
-	let response = await this.rethinkService.readEntity("{{kebabCase name}}", id)
-      .then(result => {
-        return JSON.stringify(result)
-      })
-      .catch(reason => {
-        return reason
-      })
-  
-    return response;
+	@Get("q?")
+	async searchTable(@Query() query): Promise<any> {
+		const q = this.{{kebabCase name}}Service.checkQueryParams(query)
+		let response = await this.rethinkService
+				.searchTable("{{kebabCase name}}", q)
+				.then((result) => {
+						return JSON.stringify(result);
+				})
+				.catch((reason) => {
+						return reason;
+				});
+		return response;
 	}
-		
+
+	@Get("/:id")
+	async readEntity(@Param("id") id): Promise<any> {
+		let response = await this.rethinkService
+			.readEntity("{{kebabCase name}}", id)
+			.then(result => {
+				return JSON.stringify(result)
+			})
+			.catch(reason => {
+				return reason
+			});	
+		return response;
+	}
+			
 	@Post()
 	async createEntity(@Body() data): Promise<any> {
 		if (data.id) {
-			await this.rethinkService.updateEntity("{{kebabCase name}}", data.id, data)
+			await this.rethinkService
+				.updateEntity("{{kebabCase name}}", data.id, data)
 				.then(result => {
 					return JSON.stringify(result)
 				})
@@ -54,7 +69,8 @@ export class {{pascalCase name}}Controller {
 				})
 		} else {
 			const { id, ...newEntity } = data
-			await this.rethinkService.insertEntity("{{kebabCase name}}", newEntity)
+			await this.rethinkService
+				.insertEntity("{{kebabCase name}}", newEntity)
 				.then(result => {
 					return JSON.stringify(result)
 				})
@@ -66,34 +82,35 @@ export class {{pascalCase name}}Controller {
 		
 	@Put()
 	async createTable(): Promise<any> {
-		await this.rethinkService.createTable("{{kebabCase name}}")
-			.then(result => {
-				return JSON.stringify(result)
-			})
-			.catch(reason => {
-				return reason
-			})
+			await this.rethinkService
+				.createTable("{{kebabCase name}}")
+				.then(result => {
+					return JSON.stringify(result)
+				})
+				.catch(reason => {
+					return reason
+				})
 	}
 		
 	@Post("/:id")
 	async updateEntity(@Param("id") id, @Body() data): Promise<any> {
-		await this.rethinkService.updateEntity("{{kebabCase name}}", id, data)
-			.then(result => {
-				return JSON.stringify(result)
-			})
-			.catch(reason => {
-				return reason
-			})
+			await this.rethinkService.updateEntity("{{kebabCase name}}", id, data)
+				.then(result => {
+					return JSON.stringify(result)
+				})
+				.catch(reason => {
+					return reason
+				})
 	}
 		
 	@Delete("/:id")
 	async deleteTable(@Param("id") id): Promise<any> {
-		await this.rethinkService.deleteEntity("{{kebabCase name}}", id)
-			.then(result => {
-				return JSON.stringify(result)
-			})
-			.catch(reason => {
-				return reason
-			})
+			await this.rethinkService.deleteEntity("{{kebabCase name}}", id)
+				.then(result => {
+					return JSON.stringify(result)
+				})
+				.catch(reason => {
+					return reason
+				})
 	}
 }

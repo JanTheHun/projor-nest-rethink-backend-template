@@ -27,4 +27,12 @@ export class {{pascalCase name}}Service {
             this.eventsService.emitMessage("{{camelCase name}}");
         });
     }
+
+    public checkQueryParams(query): any {
+        let { name, number, ...rest } = query;
+        return {
+            name: { value: Array.isArray(name) ? name : [name], type: "string" },
+            number: { value: Array.isArray(number) ? number : [number], type: "number" },
+        };
+    }
 }
