@@ -29,10 +29,21 @@ export class {{pascalCase name}}Service {
     }
 
     public checkQueryParams(query): any {
-        let { name, number, ...rest } = query;
+        let {
+            {{#each attributes}}
+            {{camelCase name}},
+            {{/each}}
+            {{#each associations}}
+            {{camelCase name}}Id,
+            {{/each}}
+             ...rest } = query;
         return {
-            name: { value: Array.isArray(name) ? name : [name], type: "string" },
-            number: { value: Array.isArray(number) ? number : [number], type: "number" },
+            {{#each attributes}}
+            {{camelCase name}}: { value: Array.isArray({{camelCase name}}) ? {{camelCase name}} : [{{camelCase name}}], type: "{{type.ts}}" },
+            {{/each}}
+            {{#each associations}}
+            {{camelCase name}}Id: { value: Array.isArray({{camelCase name}}Id) ? {{camelCase name}}Id : [{{camelCase name}}Id], type: "string" },
+            {{/each}}
         };
     }
 }
