@@ -13,9 +13,6 @@ import { RethinkModule } from './rethink/rethink.module';
 {{#each entities}}
 import { {{pascalCase name}}Module } from './EntityModules/{{kebabCase name}}/{{kebabCase name}}.module';
 {{/each}}
-{{#each entities}}
-import { {{pascalCase name}}Controller } from './EntityModules/{{kebabCase name}}/{{kebabCase name}}.controller';
-{{/each}}
 
 @Module({
   imports: [
@@ -24,7 +21,7 @@ import { {{pascalCase name}}Controller } from './EntityModules/{{kebabCase name}
     {{pascalCase name}}Module,
     {{/each}}
   ],
-  controllers: [AppController, {{#each entities}}{{pascalCase name}}Controller, {{/each}}],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
